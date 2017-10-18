@@ -2,18 +2,15 @@ from redis import StrictRedis, RedisError
 import os
 import hashlib
 import logging
+import json
 
 from common.configuration import configuration
 
 class Cache:
     """A class that implements a most-recently-used cache algorithm."""
 
-    LOGGER = logging.getLogger('flask.app')
-
     def __init__(self, expire=600):
         service = configuration().service('redis')
-
-        Cache.LOGGER.debug('ELLO')
 
         self.expire = expire
         self.connection = StrictRedis()
@@ -41,8 +38,10 @@ class Cache:
     def put(self, key, value):
         """Store a value in the cache with an appropriate timeout."""
 
+        seralized_value = json.dumps(value)
+
         try:
-            self.connection.set(self.__hash_key__(key), value, ex=self.expire, nx=True)
+            self.connection.set(self.__hash_key__(key), seralized_value, ex=self.expire, nx=True)
         except RedisError as error:
             self.__log_cache_error__(error)
 
@@ -61,7 +60,7 @@ class Cache:
 
     @staticmethod
     def __hash_key__(key):
-        hashlib.sha256(key.encode('utf-8')).hexdigest()
+        return hashlib.sha256(key.encode('utf-8')).hexdigest()
 
     @staticmethod
     def __log_cache_error__(error):

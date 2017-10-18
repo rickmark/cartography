@@ -14,7 +14,8 @@ setup(
         'flask-restful',
         'redis',
         'python-consul',
-        'googlemaps'
+        'googlemaps',
+        'censusgeocode'
     ],
     setup_requires=[],
     tests_requrie=[]

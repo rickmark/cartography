@@ -3,6 +3,7 @@ from common.census_geocoder import CensusGeocoder
 from common.google_geocoder import GoogleGeocoder
 from common.cache import Cache
 import logging
+import json
 
 
 class Geocoder:
@@ -24,7 +25,13 @@ class Geocoder:
 
         value = cache.get(normalized_search)
 
-        return value or self.__get_from_services__(normalized_search)
+        if value:
+            return json.loads(value)
+        else:
+            result = self.__get_from_services__(normalized_search)
+            cache.put(normalized_search, result)
+
+            return result
 
     def __get_cache_instance__(self):
         return self.cache()
