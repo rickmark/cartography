@@ -1,24 +1,37 @@
+import json
+import logging
+
 from common import NotAvailableError
+from common.cache import Cache
 from common.census_geocoder import CensusGeocoder
 from common.google_geocoder import GoogleGeocoder
-from common.cache import Cache
-import logging
-import json
 
 
 class Geocoder:
     """Geocoder is a class that handles multiple geocoding backends and caching of results."""
 
     def __init__(self, cache=Cache):
+        """
+        Creates a new instance of the geocoder service.
+
+        :param class cache: The class of the cache provider to use.
+        """
+
         self.services = [GoogleGeocoder, CensusGeocoder]
         self.cache = cache
 
     def get_coordinates(self, search):
-        """Gets a ordered coordinate set for a search term from whichever source is best able to provide.
+        """
+        Gets a ordered coordinate set for a search term from whichever source is best able to provide.
         If the result is successful a dictionary with the coordinates will be returned, otherwise None.
 
         {"latitude": "-112.826743", "longitude": "-35.827346"}
+
+        :param str search: The address to search the geocoding service for.
+        :return: The GPS coordinates of the address or if not possible to geocode, None.
+        :rtype: dict or None
         """
+
         normalized_search = self.__normalize_string__(search)
 
         cache = self.__get_cache_instance__()
@@ -42,7 +55,7 @@ class Geocoder:
                 return service().get_coordinates(normalized_search)
 
             except NotAvailableError as error:
-                logging.getLogger('flask.app').warning("Geocoder %s was unable to search for %s:\n\n%s",
+                logging.getLogger('flask.web').warning("Geocoder %s was unable to search for %s:\n\n%s",
                                                        service.__name__, normalized_search, error.inner)
 
                 continue

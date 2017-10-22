@@ -1,8 +1,8 @@
+#!/usr/bin/env python3
+
 # Library Imports
-from flask import Flask, Blueprint
-from flask_restful import Resource, Api, url_for
-from os import environ
-import logging
+from flask import Flask
+from flask_restful import Api
 
 # Application imports
 from common.configuration import configuration

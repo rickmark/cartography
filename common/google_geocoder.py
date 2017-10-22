@@ -1,13 +1,14 @@
-from common import NotAvailableError
-from googlemaps import Client
 import logging
 
+from googlemaps import Client
+
+from common import NotAvailableError
 from common.configuration import configuration
 
 
 class GoogleGeocoder:
     def __init__(self):
-        self.logger = logging.getLogger('flask.app')
+        self.logger = logging.getLogger('flask.web')
 
         key = configuration().get('GOOGLE_MAPS_KEY')
 

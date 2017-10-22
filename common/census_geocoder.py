@@ -1,8 +1,6 @@
-import logging
 from censusgeocode import CensusGeocode
 
 from common import NotAvailableError
-from common.configuration import configuration
 
 
 class CensusGeocoder:

@@ -1,5 +1,6 @@
-from flask_restful import Resource
 from http import HTTPStatus
+
+from flask_restful import Resource
 
 from common.cache import Cache
 

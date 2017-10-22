@@ -1,0 +1,19 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - 5000:5000
+    links:
+      - consul
+      - redis
+    deploy:
+      mode: global
+  redis:
+    image: redis:latest
+    deploy:
+      mode: global
+  consul:
+    image: consul:latest
+    deploy:
+      mode: global

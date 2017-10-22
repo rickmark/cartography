@@ -1,16 +1,20 @@
-from redis import StrictRedis, RedisError
-import os
 import hashlib
-import logging
 import json
+import logging
+
+from redis import StrictRedis, RedisError
 
 from common.configuration import configuration
+
 
 class Cache:
     """A class that implements a most-recently-used cache algorithm."""
 
-    def __init__(self, expire=600):
-        service = configuration().service('redis')
+    def __init__(self, expire=600, service_name='redis', port=None, server=None):
+
+        # TODO: Use the coordinates from the configuration server
+        if server is None:
+            service = configuration().service(service_name)
 
         self.expire = expire
         self.connection = StrictRedis()
@@ -38,10 +42,10 @@ class Cache:
     def put(self, key, value):
         """Store a value in the cache with an appropriate timeout."""
 
-        seralized_value = json.dumps(value)
+        serialized_value = json.dumps(value)
 
         try:
-            self.connection.set(self.__hash_key__(key), seralized_value, ex=self.expire, nx=True)
+            self.connection.set(self.__hash_key__(key), serialized_value, ex=self.expire, nx=True)
         except RedisError as error:
             self.__log_cache_error__(error)
 
